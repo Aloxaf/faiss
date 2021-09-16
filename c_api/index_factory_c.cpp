@@ -29,3 +29,14 @@ int faiss_index_factory(
     }
     CATCH_AND_HANDLE
 }
+
+int faiss_index_binary_factory(
+        FaissIndexBinary** p_index,
+        int d,
+        const char* description) {
+    try {
+        *p_index = reinterpret_cast<FaissIndexBinary*>(
+                faiss::index_binary_factory(d, description));
+    }
+    CATCH_AND_HANDLE
+}

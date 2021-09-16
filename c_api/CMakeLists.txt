@@ -12,6 +12,7 @@ set(CMAKE_C_STANDARD 11)
 set(FAISS_C_SRC
   AutoTune_c.cpp
   Clustering_c.cpp
+  IndexBinary_c.cpp
   IndexFlat_c.cpp
   IndexIVFFlat_c.cpp
   IndexIVF_c.cpp
@@ -29,7 +30,7 @@ set(FAISS_C_SRC
   index_io_c.cpp
   impl/AuxIndexStructures_c.cpp
   utils/distances_c.cpp
-)
+        IndexBinaryFlat_c.cpp IndexBinaryIVF_c.cpp IndexBinaryFromFloat_c.cpp)
 add_library(faiss_c ${FAISS_C_SRC})
 target_link_libraries(faiss_c PRIVATE faiss)
 

@@ -146,7 +146,7 @@ int faiss_Index_reset(FaissIndex* index);
 
 /** removes IDs from the index. Not supported by all indexes
  * @param index       opaque pointer to index object
- * @param nremove     output for the number of IDs removed
+ * @param n_remove    output for the number of IDs removed
  */
 int faiss_Index_remove_ids(
         FaissIndex* index,

@@ -11,6 +11,7 @@
 #ifndef FAISS_INDEX_FACTORY_C_H
 #define FAISS_INDEX_FACTORY_C_H
 
+#include "IndexBinary_c.h"
 #include "Index_c.h"
 #include "faiss_c.h"
 
@@ -26,6 +27,11 @@ int faiss_index_factory(
         int d,
         const char* description,
         FaissMetricType metric);
+
+int faiss_index_binary_factory(
+        FaissIndexBinary** p_index,
+        int d,
+        const char* description);
 
 #ifdef __cplusplus
 }
