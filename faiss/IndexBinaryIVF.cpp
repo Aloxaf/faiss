@@ -304,7 +304,7 @@ void IndexBinaryIVF::check_compatible_for_merge(
             direct_map.no() && other->direct_map.no(),
             "direct map copy not implemented");
     FAISS_THROW_IF_NOT_MSG(
-            typeid(*this) == typeid(other),
+            typeid(*this) == typeid(*other),
             "can only merge indexes of the same type");
 }
 
@@ -505,12 +505,13 @@ void search_knn_hamming_count(
 
     std::vector<HCounterState<HammingComputer>> cs;
     for (size_t i = 0; i < nx; ++i) {
-        cs.push_back(HCounterState<HammingComputer>(
-                all_counters.data() + i * nBuckets,
-                all_ids_per_dis.get() + i * nBuckets * k,
-                x + i * ivf->code_size,
-                ivf->d,
-                k));
+        cs.push_back(
+                HCounterState<HammingComputer>(
+                        all_counters.data() + i * nBuckets,
+                        all_ids_per_dis.get() + i * nBuckets * k,
+                        x + i * ivf->code_size,
+                        ivf->d,
+                        k));
     }
 
     size_t nlistv = 0, ndis = 0;
