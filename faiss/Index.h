@@ -27,10 +27,17 @@
 #ifndef FAISS_TOSTRING
 #define FAISS_TOSTRING(ARG) FAISS_STRINGIFY(ARG)
 #endif
+#if defined(__AVX512F__)
+#define FAISS_VERION_SIMD "avx512"
+#elif defined(__AVX2__)
+#define FAISS_VERION_SIMD "avx2"
+#else
+#define FAISS_VERION_SIMD "generic"
+#endif
 #define VERSION_STRING                                          \
     FAISS_TOSTRING(FAISS_VERSION_MAJOR)                         \
     "." FAISS_TOSTRING(FAISS_VERSION_MINOR) "." FAISS_TOSTRING( \
-            FAISS_VERSION_PATCH)
+            FAISS_VERSION_PATCH) "+" FAISS_VERION_SIMD
 
 /**
  * @namespace faiss
