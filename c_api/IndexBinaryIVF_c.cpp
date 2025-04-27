@@ -10,11 +10,13 @@
 #include "IndexBinaryIVF_c.h"
 #include <faiss/IndexBinaryIVF.h>
 #include <faiss/IndexIVF.h>
+
 #include "macros_impl.h"
 
 extern "C" {
 
 using faiss::IndexBinaryIVF;
+using faiss::InvertedLists;
 
 DEFINE_DESTRUCTOR(IndexBinaryIVF)
 DEFINE_INDEX_BINARY_DOWNCAST(IndexBinaryIVF)
@@ -33,6 +35,10 @@ DEFINE_GETTER_PERMISSIVE(IndexBinaryIVF, FaissIndexBinary*, quantizer)
 DEFINE_GETTER(IndexBinaryIVF, int, own_fields)
 DEFINE_SETTER(IndexBinaryIVF, int, own_fields)
 
+/// whether object owns the inverted lists
+DEFINE_GETTER(IndexBinaryIVF, int, own_invlists)
+DEFINE_SETTER(IndexBinaryIVF, int, own_invlists)
+
 /// max nb of codes to visit to do a query
 DEFINE_GETTER(IndexBinaryIVF, size_t, max_codes)
 DEFINE_SETTER(IndexBinaryIVF, size_t, max_codes)
@@ -46,6 +52,9 @@ DEFINE_SETTER(IndexBinaryIVF, int, use_heap)
 /// collect computations per batch
 DEFINE_GETTER(IndexBinaryIVF, int, per_invlist_search)
 DEFINE_SETTER(IndexBinaryIVF, int, per_invlist_search)
+
+/// access to the inverted lists
+DEFINE_GETTER_PERMISSIVE(IndexBinaryIVF, FaissInvertedLists*, invlists)
 
 int faiss_IndexBinaryIVF_merge_from(
         FaissIndexBinaryIVF* index,
@@ -91,6 +100,17 @@ int faiss_IndexBinaryIVF_make_direct_map(
     try {
         reinterpret_cast<IndexBinaryIVF*>(index)->make_direct_map(
                 static_cast<bool>(new_maintain_direct_map));
+    }
+    CATCH_AND_HANDLE
+}
+
+int faiss_IndexBinaryIVF_replace_invlists(
+        FaissIndexBinaryIVF* index,
+        FaissInvertedLists* invlists,
+        int own) {
+    try {
+        InvertedLists* l = reinterpret_cast<InvertedLists*>(invlists);
+        reinterpret_cast<IndexBinaryIVF*>(index)->replace_invlists(l, own);
     }
     CATCH_AND_HANDLE
 }

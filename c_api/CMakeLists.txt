@@ -33,6 +33,7 @@ set(FAISS_C_SRC
   impl/io_c.cpp
   utils/distances_c.cpp
   utils/utils_c.cpp
+  invlists/OnDiskInvertedLists_c.cpp
 )
 
 add_library(faiss_c ${FAISS_C_SRC})

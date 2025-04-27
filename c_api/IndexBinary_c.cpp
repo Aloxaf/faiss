@@ -20,6 +20,9 @@ DEFINE_GETTER(IndexBinary, int, d)
 DEFINE_GETTER(IndexBinary, int, is_trained)
 
 DEFINE_GETTER(IndexBinary, idx_t, ntotal)
+DEFINE_SETTER(IndexBinary, idx_t, ntotal)
+
+DEFINE_GETTER(IndexBinary, int, code_size)
 
 DEFINE_GETTER(IndexBinary, FaissMetricType, metric_type)
 

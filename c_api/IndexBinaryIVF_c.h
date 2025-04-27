@@ -13,6 +13,7 @@
 #include "IndexBinary_c.h"
 #include "IndexIVF_c.h"
 #include "faiss_c.h"
+#include "invlists/OnDiskInvertedLists_c.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,6 +42,9 @@ FAISS_DECLARE_GETTER(IndexBinaryIVF, FaissIndexBinary*, quantizer)
 /// whether object owns the quantizer
 FAISS_DECLARE_GETTER_SETTER(IndexBinaryIVF, int, own_fields)
 
+/// whether object owns the inverted lists
+FAISS_DECLARE_GETTER_SETTER(IndexBinaryIVF, int, own_invlists)
+
 /// max nb of codes to visit to do a query
 FAISS_DECLARE_GETTER_SETTER(IndexBinaryIVF, size_t, max_codes)
 
@@ -51,6 +55,9 @@ FAISS_DECLARE_GETTER_SETTER(IndexBinaryIVF, int, use_heap)
 
 /// collect computations per batch
 FAISS_DECLARE_GETTER_SETTER(IndexBinaryIVF, int, per_invlist_search)
+
+/// access to the inverted lists
+FAISS_DECLARE_GETTER(IndexBinaryIVF, FaissInvertedLists*, invlists)
 
 /** moves the entries from another dataset to self. On output,
  * other is empty. add_id is added to all moved ids (for
@@ -101,6 +108,11 @@ size_t faiss_IndexBinaryIVF_get_list_size(
 int faiss_IndexBinaryIVF_make_direct_map(
         FaissIndexBinaryIVF* index,
         int new_maintain_direct_map);
+
+int faiss_IndexBinaryIVF_replace_invlists(
+        FaissIndexBinaryIVF* index,
+        FaissInvertedLists* invlists,
+        int own);
 
 /** Check the inverted lists' imbalance factor.
  *

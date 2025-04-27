@@ -35,7 +35,10 @@ FAISS_DECLARE_GETTER(IndexBinary, int, d)
 FAISS_DECLARE_GETTER(IndexBinary, int, is_trained)
 
 /// Getter for ntotal
-FAISS_DECLARE_GETTER(IndexBinary, idx_t, ntotal)
+FAISS_DECLARE_GETTER_SETTER(IndexBinary, idx_t, ntotal)
+
+/// Getter for code_size
+FAISS_DECLARE_GETTER(IndexBinary, int, code_size)
 
 /// Getter for metric_type
 FAISS_DECLARE_GETTER(IndexBinary, FaissMetricType, metric_type)
