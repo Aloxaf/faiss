@@ -37,7 +37,7 @@ FAISS_DECLARE_GETTER(IndexBinaryIVF, size_t, nlist)
 /// number of probes at query time
 FAISS_DECLARE_GETTER_SETTER(IndexBinaryIVF, size_t, nprobe)
 /// quantizer that maps vectors to inverted lists
-FAISS_DECLARE_GETTER(IndexBinaryIVF, FaissIndexBinary*, quantizer)
+FAISS_DECLARE_GETTER_SETTER(IndexBinaryIVF, FaissIndexBinary*, quantizer)
 
 /// whether object owns the quantizer
 FAISS_DECLARE_GETTER_SETTER(IndexBinaryIVF, int, own_fields)

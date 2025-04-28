@@ -15,6 +15,7 @@
 
 extern "C" {
 
+using faiss::IndexBinary;
 using faiss::IndexBinaryIVF;
 using faiss::InvertedLists;
 
@@ -137,5 +138,12 @@ void faiss_IndexBinaryIVF_invlists_get_ids(
             reinterpret_cast<const IndexBinaryIVF*>(index)->get_list_size(
                     list_no);
     memcpy(invlist, list, list_size * sizeof(idx_t));
+}
+
+void faiss_IndexBinaryIVF_set_quantizer(
+        FaissIndexBinaryIVF* index,
+        FaissIndexBinary* quantizer) {
+    reinterpret_cast<IndexBinaryIVF*>(index)->quantizer =
+            reinterpret_cast<IndexBinary*>(quantizer);
 }
 }
