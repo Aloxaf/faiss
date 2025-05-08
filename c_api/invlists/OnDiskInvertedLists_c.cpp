@@ -53,8 +53,8 @@ int faiss_OnDiskInvertedLists_merge_from_multiple(
     try {
         const InvertedLists** ils_ =
                 reinterpret_cast<const InvertedLists**>(ils);
-        reinterpret_cast<OnDiskInvertedLists*>(invlists)->merge_from_multiple(
-                ils_, n_il, shift_ids, verbose);
+        return reinterpret_cast<OnDiskInvertedLists*>(invlists)
+                ->merge_from_multiple(ils_, n_il, shift_ids, verbose);
     }
     CATCH_AND_HANDLE
 }
