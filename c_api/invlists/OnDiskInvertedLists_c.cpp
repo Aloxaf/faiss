@@ -17,7 +17,6 @@ using faiss::InvertedLists;
 using faiss::OnDiskInvertedLists;
 
 DEFINE_DESTRUCTOR(OnDiskInvertedLists)
-DEFINE_DESTRUCTOR(InvertedLists)
 
 const char* faiss_OnDiskInvertedLists_filename(
         const FaissOnDiskInvertedLists* invlists) {

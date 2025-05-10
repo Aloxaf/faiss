@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "../faiss_c.h"
+#include "InvertedLists_c.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,8 +49,6 @@ extern "C" {
  */
 FAISS_DECLARE_CLASS_INHERITED(OnDiskInvertedLists, InvertedLists)
 FAISS_DECLARE_DESTRUCTOR(OnDiskInvertedLists)
-
-FAISS_DECLARE_CLASS(InvertedLists)
 
 FAISS_DECLARE_GETTER(OnDiskInvertedLists, const char*, filename)
 FAISS_DECLARE_SETTER(OnDiskInvertedLists, const char*, filename)

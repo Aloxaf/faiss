@@ -35,6 +35,7 @@ set(FAISS_C_SRC
   impl/io_c.cpp
   utils/distances_c.cpp
   utils/utils_c.cpp
+  invlists/InvertedLists_c.cpp
   invlists/OnDiskInvertedLists_c.cpp
 )
 
