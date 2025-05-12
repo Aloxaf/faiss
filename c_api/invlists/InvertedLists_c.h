@@ -27,6 +27,13 @@ extern "C" {
 FAISS_DECLARE_CLASS(InvertedLists)
 FAISS_DECLARE_DESTRUCTOR(InvertedLists)
 
+int faiss_InvertedLists_add_entries(
+        FaissInvertedLists* invlists,
+        size_t list_no,
+        size_t n_entry,
+        const idx_t* ids_in,
+        const uint8_t* codes);
+
 /*****************************************************************
  * Meta-inverted lists
  *

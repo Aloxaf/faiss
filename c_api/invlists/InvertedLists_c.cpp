@@ -25,6 +25,19 @@ using faiss::VStackInvertedLists;
 
 DEFINE_DESTRUCTOR(InvertedLists)
 
+int faiss_InvertedLists_add_entries(
+        FaissInvertedLists* invlists,
+        size_t list_no,
+        size_t n_entry,
+        const idx_t* ids_in,
+        const uint8_t* codes) {
+    try {
+        reinterpret_cast<InvertedLists*>(invlists)->add_entries(
+                list_no, n_entry, ids_in, codes);
+    }
+    CATCH_AND_HANDLE
+}
+
 DEFINE_DESTRUCTOR(ReadOnlyInvertedLists)
 DEFINE_DESTRUCTOR(HStackInvertedLists)
 DEFINE_DESTRUCTOR(SliceInvertedLists)

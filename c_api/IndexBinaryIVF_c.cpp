@@ -127,17 +127,38 @@ void faiss_IndexBinaryIVF_print_stats(const FaissIndexBinaryIVF* index) {
 }
 
 /// get inverted lists ids
-void faiss_IndexBinaryIVF_invlists_get_ids(
+int faiss_IndexBinaryIVF_invlists_get_ids(
         const FaissIndexBinaryIVF* index,
         size_t list_no,
         idx_t* invlist) {
-    const idx_t* list =
-            reinterpret_cast<const IndexBinaryIVF*>(index)->invlists->get_ids(
-                    list_no);
-    size_t list_size =
-            reinterpret_cast<const IndexBinaryIVF*>(index)->get_list_size(
-                    list_no);
-    memcpy(invlist, list, list_size * sizeof(idx_t));
+    try {
+        const idx_t* list = reinterpret_cast<const IndexBinaryIVF*>(index)
+                                    ->invlists->get_ids(list_no);
+        size_t list_size =
+                reinterpret_cast<const IndexBinaryIVF*>(index)->get_list_size(
+                        list_no);
+
+        memcpy(invlist, list, list_size * sizeof(idx_t));
+    }
+    CATCH_AND_HANDLE
+}
+
+/// get inverted lists codes
+int faiss_IndexBinaryIVF_invlists_get_codes(
+        const FaissIndexBinaryIVF* index,
+        size_t list_no,
+        uint8_t* codes) {
+    try {
+        const uint8_t* list = reinterpret_cast<const IndexBinaryIVF*>(index)
+                                      ->invlists->get_codes(list_no);
+        size_t list_size =
+                reinterpret_cast<const IndexBinaryIVF*>(index)->get_list_size(
+                        list_no);
+        size_t code_size =
+                reinterpret_cast<const IndexBinaryIVF*>(index)->code_size;
+        memcpy(codes, list, list_size * code_size * sizeof(uint8_t));
+    }
+    CATCH_AND_HANDLE
 }
 
 void faiss_IndexBinaryIVF_set_quantizer(
