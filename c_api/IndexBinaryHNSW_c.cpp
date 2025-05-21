@@ -9,11 +9,42 @@
 
 #include "IndexBinaryHNSW_c.h"
 #include <faiss/IndexBinaryHNSW.h>
+#include <faiss/impl/HNSW.h>
 #include "macros_impl.h"
 
 extern "C" {
 
 using faiss::IndexBinaryHNSW;
+using faiss::SearchParametersHNSW;
+
+DEFINE_DESTRUCTOR(SearchParametersHNSW)
+DEFINE_SEARCH_PARAMETERS_DOWNCAST(SearchParametersHNSW)
+
+int faiss_SearchParametersHNSW_new(FaissSearchParametersHNSW** p_sp) {
+    try {
+        SearchParametersHNSW* sp = new SearchParametersHNSW;
+        *p_sp = reinterpret_cast<FaissSearchParametersHNSW*>(sp);
+    }
+    CATCH_AND_HANDLE
+}
+
+int faiss_SearchParametersHNSW_new_with(
+        FaissSearchParametersHNSW** p_sp,
+        FaissIDSelector* sel,
+        int efSearch) {
+    try {
+        SearchParametersHNSW* sp = new SearchParametersHNSW;
+        sp->sel = reinterpret_cast<faiss::IDSelector*>(sel);
+        sp->efSearch = efSearch;
+        *p_sp = reinterpret_cast<FaissSearchParametersHNSW*>(sp);
+    }
+    CATCH_AND_HANDLE
+}
+
+DEFINE_GETTER_PERMISSIVE(SearchParametersHNSW, const FaissIDSelector*, sel)
+
+DEFINE_GETTER(SearchParametersHNSW, int, efSearch)
+DEFINE_SETTER(SearchParametersHNSW, int, efSearch)
 
 DEFINE_DESTRUCTOR(IndexBinaryHNSW)
 DEFINE_INDEX_BINARY_DOWNCAST(IndexBinaryHNSW)

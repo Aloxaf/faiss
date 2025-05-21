@@ -28,11 +28,16 @@ int faiss_SearchParametersIVF_new_with(
         FaissSearchParametersIVF** p_sp,
         FaissIDSelector* sel,
         size_t nprobe,
-        size_t max_codes);
+        size_t max_codes,
+        FaissSearchParameters* quantizer_params);
 
 FAISS_DECLARE_GETTER(SearchParametersIVF, const FaissIDSelector*, sel)
 FAISS_DECLARE_GETTER_SETTER(SearchParametersIVF, size_t, nprobe)
 FAISS_DECLARE_GETTER_SETTER(SearchParametersIVF, size_t, max_codes)
+FAISS_DECLARE_GETTER_SETTER(
+        SearchParametersIVF,
+        FaissSearchParameters*,
+        quantizer_params)
 
 /** Index based on a inverted file (IVF)
  *

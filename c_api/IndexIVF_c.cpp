@@ -35,12 +35,15 @@ int faiss_SearchParametersIVF_new_with(
         FaissSearchParametersIVF** p_sp,
         FaissIDSelector* sel,
         size_t nprobe,
-        size_t max_codes) {
+        size_t max_codes,
+        FaissSearchParameters* quantizer_params) {
     try {
         SearchParametersIVF* sp = new SearchParametersIVF;
         sp->sel = reinterpret_cast<faiss::IDSelector*>(sel);
         sp->nprobe = nprobe;
         sp->max_codes = max_codes;
+        sp->quantizer_params =
+                reinterpret_cast<faiss::SearchParameters*>(quantizer_params);
         *p_sp = reinterpret_cast<FaissSearchParametersIVF*>(sp);
     }
     CATCH_AND_HANDLE
@@ -53,6 +56,11 @@ DEFINE_SETTER(SearchParametersIVF, size_t, nprobe)
 
 DEFINE_GETTER(SearchParametersIVF, size_t, max_codes)
 DEFINE_SETTER(SearchParametersIVF, size_t, max_codes)
+
+DEFINE_GETTER_PERMISSIVE(
+        SearchParametersIVF,
+        FaissSearchParameters*,
+        quantizer_params)
 
 /// IndexIVF definitions
 

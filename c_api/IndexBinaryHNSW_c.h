@@ -11,14 +11,25 @@
 #define FAISS_INDEX_BINARY_HNSW_C_H
 
 #include "IndexBinary_c.h"
+#include "Index_c.h"
 #include "faiss_c.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// forward declaration
-typedef struct FaissHNSW_H FaissHNSW;
+FAISS_DECLARE_CLASS_INHERITED(SearchParametersHNSW, SearchParameters)
+FAISS_DECLARE_DESTRUCTOR(SearchParametersHNSW)
+FAISS_DECLARE_SEARCH_PARAMETERS_DOWNCAST(SearchParametersHNSW)
+
+int faiss_SearchParametersHNSW_new(FaissSearchParametersHNSW** p_sp);
+int faiss_SearchParametersHNSW_new_with(
+        FaissSearchParametersHNSW** p_sp,
+        FaissIDSelector* sel,
+        int efSearch);
+
+FAISS_DECLARE_GETTER(SearchParametersHNSW, const FaissIDSelector*, sel)
+FAISS_DECLARE_GETTER_SETTER(SearchParametersHNSW, int, efSearch)
 
 /** The HNSW index is a normal random-access index with a HNSW
  * link structure built on top */
