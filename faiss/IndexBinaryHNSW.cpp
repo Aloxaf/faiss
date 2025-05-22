@@ -114,7 +114,7 @@ void hnsw_add_vertices(
             {
                 VisitedTable vt(ntotal);
 
-                std::unique_ptr<DistanceComputer> dis(
+                std::unique_ptr<DistanceComputerLSG> dis(
                         index_hnsw.get_distance_computer());
                 int prev_display =
                         verbose && omp_get_thread_num() == 0 ? 0 : -1;
@@ -123,7 +123,8 @@ void hnsw_add_vertices(
                 for (int i = i0; i < i1; i++) {
                     HNSW::storage_idx_t pt_id = order[i];
                     dis->set_query(
-                            (float*)(x + (pt_id - n0) * index_hnsw.code_size));
+                            (float*)(x + (pt_id - n0) * index_hnsw.code_size),
+                            pt_id);
 
                     hnsw.add_with_locks(*dis, pt_level, pt_id, locks, vt);
 
@@ -237,6 +238,21 @@ void IndexBinaryHNSW::add(idx_t n, const uint8_t* x) {
     hnsw_add_vertices(*this, n0, n, x, verbose, hnsw.levels.size() == ntotal);
 }
 
+void IndexBinaryHNSW::add_lsg(
+        idx_t n,
+        const uint8_t* x,
+        float* mu,
+        float alpha) {
+    FAISS_THROW_IF_NOT(is_trained);
+    this->mu = mu;
+    this->alpha = alpha;
+    int n0 = ntotal;
+    storage->add(n, x);
+    ntotal = storage->ntotal;
+    hnsw_add_vertices(*this, n0, n, x, verbose, hnsw.levels.size() == ntotal);
+    this->mu = nullptr;
+}
+
 void IndexBinaryHNSW::reset() {
     hnsw.reset();
     storage->reset();
@@ -250,7 +266,7 @@ void IndexBinaryHNSW::reconstruct(idx_t key, uint8_t* recons) const {
 namespace {
 
 template <class HammingComputer>
-struct FlatHammingDis : DistanceComputer {
+struct FlatHammingDis : DistanceComputerLSG {
     const int code_size;
     const uint8_t* b;
     size_t ndis;
@@ -274,6 +290,10 @@ struct FlatHammingDis : DistanceComputer {
 
     // NOTE: Pointers are cast from float in order to reuse the floating-point
     //   DistanceComputer.
+    void set_query(const float* x, storage_idx_t idx = -1) override {
+        hc.set((uint8_t*)x, code_size);
+    }
+
     void set_query(const float* x) override {
         hc.set((uint8_t*)x, code_size);
     }
@@ -286,21 +306,71 @@ struct FlatHammingDis : DistanceComputer {
     }
 };
 
+template <class HammingComputer>
+struct FlatHammingDisWithLSG : FlatHammingDis<HammingComputer> {
+    const float* q;
+    storage_idx_t idx_q; // use to local scaling
+    const float* mu;
+    float alpha;
+
+    explicit FlatHammingDisWithLSG(
+            const IndexBinaryFlat& storage,
+            const float* mu,
+            float alpha)
+            : FlatHammingDis<HammingComputer>(storage), mu(mu), alpha(alpha) {}
+
+    float operator()(idx_t i) override {
+        this->ndis++;
+        float d = this->hc.hamming(this->b + i * this->code_size);
+        if (mu) {
+            d = local_scaling(d, idx_q, i);
+        }
+        return d;
+    }
+
+    float symmetric_dis(idx_t i, idx_t j) override {
+        float d = HammingComputerDefault(
+                          this->b + j * this->code_size, this->code_size)
+                          .hamming(this->b + i * this->code_size);
+        if (mu) {
+            d = local_scaling(d, j, i);
+        }
+        return d;
+    }
+
+    float local_scaling(float d, storage_idx_t i, storage_idx_t j) {
+        return d / powf(sqrtf(mu[i]) * sqrtf(mu[j]), alpha);
+    }
+
+    void set_query(const float* x, storage_idx_t idx = -1) override {
+        this->hc.set((uint8_t*)x, this->code_size);
+        this->q = x;
+        this->idx_q = idx;
+    }
+};
+
 struct BuildDistanceComputer {
-    using T = DistanceComputer*;
+    using T = DistanceComputerLSG*;
     template <class HammingComputer>
-    DistanceComputer* f(IndexBinaryFlat* flat_storage) {
+    DistanceComputerLSG* f(
+            IndexBinaryFlat* flat_storage,
+            const float* mu,
+            float alpha) {
+        if (mu) {
+            return new FlatHammingDisWithLSG<HammingComputer>(
+                    *flat_storage, mu, alpha);
+        }
         return new FlatHammingDis<HammingComputer>(*flat_storage);
     }
 };
 
 } // namespace
 
-DistanceComputer* IndexBinaryHNSW::get_distance_computer() const {
+DistanceComputerLSG* IndexBinaryHNSW::get_distance_computer() const {
     IndexBinaryFlat* flat_storage = dynamic_cast<IndexBinaryFlat*>(storage);
     FAISS_ASSERT(flat_storage != nullptr);
     BuildDistanceComputer bd;
-    return dispatch_HammingComputer(code_size, bd, flat_storage);
+    return dispatch_HammingComputer(code_size, bd, flat_storage, mu, alpha);
 }
 
 } // namespace faiss

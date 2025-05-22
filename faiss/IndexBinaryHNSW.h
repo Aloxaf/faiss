@@ -10,17 +10,26 @@
 #pragma once
 
 #include <faiss/IndexBinaryFlat.h>
+#include <faiss/impl/DistanceComputer.h>
 #include <faiss/impl/HNSW.h>
 #include <faiss/utils/utils.h>
 
 namespace faiss {
 
+typedef HNSW::storage_idx_t storage_idx_t;
+
+struct DistanceComputerLSG : DistanceComputer {
+   private:
+    void set_query(const float* x) override = 0;
+
+   public:
+    virtual void set_query(const float* x, storage_idx_t idx) = 0;
+};
+
 /** The HNSW index is a normal random-access index with a HNSW
  * link structure built on top */
 
 struct IndexBinaryHNSW : IndexBinary {
-    typedef HNSW::storage_idx_t storage_idx_t;
-
     // the link structure
     HNSW hnsw;
 
@@ -28,15 +37,21 @@ struct IndexBinaryHNSW : IndexBinary {
     bool own_fields;
     IndexBinary* storage;
 
+    // Local Scaling parameter
+    float* mu = nullptr;
+    float alpha = 1.0;
+
     explicit IndexBinaryHNSW();
     explicit IndexBinaryHNSW(int d, int M = 32);
     explicit IndexBinaryHNSW(IndexBinary* storage, int M = 32);
 
     ~IndexBinaryHNSW() override;
 
-    DistanceComputer* get_distance_computer() const;
+    DistanceComputerLSG* get_distance_computer() const;
 
     void add(idx_t n, const uint8_t* x) override;
+
+    void add_lsg(idx_t n, const uint8_t* x, float* mu, float alpha);
 
     /// Trains the storage if needed
     void train(idx_t n, const uint8_t* x) override;
