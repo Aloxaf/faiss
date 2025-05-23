@@ -47,6 +47,10 @@ FAISS_DECLARE_GETTER(IndexBinaryHNSW, FaissIndexBinary*, storage)
  */
 int faiss_IndexBinaryHNSW_new(FaissIndexBinaryHNSW** p_index, int d, int M);
 
+int faiss_IndexBinaryHNSW_set_efSearch(
+        FaissIndexBinaryHNSW* index,
+        int efSearch);
+
 #ifdef __cplusplus
 }
 #endif

@@ -58,4 +58,13 @@ int faiss_IndexBinaryHNSW_new(FaissIndexBinaryHNSW** p_index, int d, int M) {
     }
     CATCH_AND_HANDLE
 }
+
+int faiss_IndexBinaryHNSW_set_efSearch(
+        FaissIndexBinaryHNSW* index,
+        int efSearch) {
+    try {
+        reinterpret_cast<IndexBinaryHNSW*>(index)->hnsw.efSearch = efSearch;
+    }
+    CATCH_AND_HANDLE
+}
 }
