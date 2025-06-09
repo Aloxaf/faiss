@@ -67,4 +67,14 @@ int faiss_IndexBinaryHNSW_set_efSearch(
     }
     CATCH_AND_HANDLE
 }
+
+int faiss_IndexBinaryHNSW_set_efConstruction(
+        FaissIndexBinaryHNSW* index,
+        int efConstruction) {
+    try {
+        reinterpret_cast<IndexBinaryHNSW*>(index)->hnsw.efConstruction = efConstruction;
+    }
+    CATCH_AND_HANDLE
+}
+
 }

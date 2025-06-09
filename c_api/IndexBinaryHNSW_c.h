@@ -51,6 +51,10 @@ int faiss_IndexBinaryHNSW_set_efSearch(
         FaissIndexBinaryHNSW* index,
         int efSearch);
 
+int faiss_IndexBinaryHNSW_set_efConstruction(
+        FaissIndexBinaryHNSW* index,
+        int efConstruction);
+
 #ifdef __cplusplus
 }
 #endif
