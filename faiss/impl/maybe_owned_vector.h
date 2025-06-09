@@ -278,6 +278,15 @@ struct MaybeOwnedVector {
         c_size = owned_data.size();
     }
 
+    void shrink_to_fit() {
+        FAISS_ASSERT_MSG(
+                is_owned,
+                "This operation cannot be performed on a viewed vector");
+        owned_data.shrink_to_fit();
+        c_ptr = owned_data.data();
+        c_size = owned_data.size();
+    }
+
     friend void swap(self_type& a, self_type& b) {
         std::swap(a.is_owned, b.is_owned);
         std::swap(a.owned_data, b.owned_data);

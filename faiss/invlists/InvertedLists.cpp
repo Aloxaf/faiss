@@ -315,6 +315,10 @@ const idx_t* ArrayInvertedLists::get_ids(size_t list_no) const {
 void ArrayInvertedLists::resize(size_t list_no, size_t new_size) {
     ids[list_no].resize(new_size);
     codes[list_no].resize(new_size * code_size);
+    if (new_size == 0) {
+        ids[list_no].shrink_to_fit();
+        codes[list_no].shrink_to_fit();
+    }
 }
 
 void ArrayInvertedLists::update_entries(
