@@ -30,6 +30,18 @@ void faiss_OnDiskInvertedLists_set_filename(
     reinterpret_cast<OnDiskInvertedLists*>(invlists)->filename = filename;
 }
 
+size_t faiss_OnDiskInvertedLists_prefetch_nthread(
+        const FaissOnDiskInvertedLists* invlists) {
+    return reinterpret_cast<const OnDiskInvertedLists*>(invlists)
+            ->prefetch_nthread;
+}
+
+void faiss_OnDiskInvertedLists_set_prefetch_nthread(
+        FaissOnDiskInvertedLists* invlists,
+        size_t prefetch_nthread) {
+    reinterpret_cast<OnDiskInvertedLists*>(invlists)->prefetch_nthread = prefetch_nthread;
+}
+
 int faiss_OnDiskInvertedLists_new(
         FaissOnDiskInvertedLists** invlists,
         size_t nlist,
